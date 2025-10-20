@@ -1,9 +1,12 @@
-﻿using Payment.Application.Common;
-using Payment.Infrastructure.Common;
-using Payment.API.Utils.Config.Auth;
-using Payment.Application.Utils;
+﻿
+using Microsoft.AspNetCore.Identity;
 
-namespace Payment.API.Common
+using Payment.Core.Models.Identities;
+using TaskSubscription.Application.Common;
+using TaskSubscription.Application.Utils;
+using TaskSubscription.Infrastructure;
+using TaskSubscription.Infrastructure.Common.Extensions;
+namespace TaskSubscription.RestAPI.Common
 {
     public class StartUp
     {
@@ -20,8 +23,11 @@ namespace Payment.API.Common
 
         public StartUp AddServices()
         {
-
-            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+            //-----------------------------------------------------------------------------------
+            var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+            //-----------------------------------------------------------------------------------
+            builder.Services.AddSingleton(appSettings);
+            //------------------------------------------
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors(option =>
@@ -33,22 +39,43 @@ namespace Payment.API.Common
                 });
             });
 
-
             builder.AddEFDataContext();
-            //------------------------------------------
-            builder.Services.AddControllersWithFilters()
-               .AddNewtonsoftJson(option =>
-               {
-                   option.UseMemberCasing();
-               });
+            services.AddIdentity<AspnetUser, AspnetRole>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<EFDataContext>()
+            .AddDefaultTokenProviders();
 
-            builder.AddJwtAuthentication();
+            // Add Identity Service
+
+
+            //------------------------------------------
+
+            builder.Services.AddControllers().AddNewtonsoftJson(option =>
+            {
+                option.UseMemberCasing();
+            });
+
+
             builder.Services.AddRepositories();
+            builder.Services.AddUnitOfWorks();
             builder.Services.AddApplicationServices();
             return this;
         }
 
-        
+
         public StartUp AddServicesAndBuild()
         {
             AddServices();

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskSubscription.Infrastructure.Common
+namespace TaskSubscription.Infrastructure.Common.Contracts
 {
     public interface IEntityConfigured
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Payment.Infrastructure;
+using TaskSubscription.Infrastructure;
 
-namespace Payment.API.Common
+namespace TaskSubscription.RestAPI.Common
 {
     public static class APIExtension
     {

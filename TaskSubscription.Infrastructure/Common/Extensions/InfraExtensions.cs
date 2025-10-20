@@ -3,19 +3,30 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 using System.Reflection;
 using CleanArchitecture.Common.Infra.Utilities.Mapping;
+using CleanArchitecture.Common.Infra.UnitOfWorks.Contracts;
+using CleanArchitecture.Common.Infra.UnitOfWorks;
+using TaskSubscription.Infrastructure.Plans;
+using TaskSubscription.Infrastructure.Subscriptions;
+using TaskSubscription.Infrastructure.Subscriptions.Contracts;
+using TaskSubscription.Infrastructure.Common.Contracts;
 
 
 
 
-namespace TaskSubscription.Infrastructure.Common
+namespace TaskSubscription.Infrastructure.Common.Extensions
 {
     public static class InfraExtensions
     {
+
+        public static void AddUnitOfWorks(this IServiceCollection services)
+        {
+            services.AddScoped<IUnitOfWork, UnitOfWork<EFDataContext>>();
+
+        }
         public static void AddRepositories(this IServiceCollection services)
         {
-            
-
-
+            services.AddScoped<IPlanRepository, PlanRepository>();
+            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
         }
 
