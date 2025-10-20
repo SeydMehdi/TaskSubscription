@@ -1,0 +1,6 @@
+@Task.Subscription.RestAPI_HostAddress = http://localhost:5091
+
+GET {{Task.Subscription.RestAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
